@@ -1,7 +1,9 @@
+import sys
+
 from pyspark.sql import SparkSession
 
-with SparkSession.builder.config('spark.default.parallelism', '1').getOrCreate() as spark:
-    text_file_rdd = spark.sparkContext.textFile("../pan-tadeusz.txt")
+with SparkSession.builder.getOrCreate() as spark:
+    text_file_rdd = spark.sparkContext.textFile(sys.argv[1])
     counts_rdd = text_file_rdd\
         .map(lambda line: line.strip())\
         .flatMap(lambda line: line.split())\
@@ -10,4 +12,4 @@ with SparkSession.builder.config('spark.default.parallelism', '1').getOrCreate()
         .map(lambda word: (word.lower(), 1))\
         .reduceByKey(lambda a, b: a + b)\
         .map(lambda word_count_pair: f"{word_count_pair[0]}\t{word_count_pair[1]}")
-    counts_rdd.saveAsTextFile("../output")
+    counts_rdd.saveAsTextFile(sys.argv[2])
