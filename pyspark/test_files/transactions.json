@@ -1,162 +1,32 @@
-[
-  {
-    "account_id": 134560,
-    "amount": -345.72,
-    "id": 121774
-  },
-  {
-    "account_id": 134560,
-    "amount": -841.02,
-    "id": 908156
-  },
-  {
-    "account_id": 134560,
-    "amount": -122.34,
-    "id": 561245
-  },
-  {
-    "account_id": 134560,
-    "amount": 363.2,
-    "id": 320803
-  },
-  {
-    "account_id": 943848,
-    "amount": 251.66,
-    "id": 479978
-  },
-  {
-    "account_id": 943848,
-    "amount": -169.04,
-    "id": 832241
-  },
-  {
-    "account_id": 943848,
-    "amount": 316.43,
-    "id": 124591
-  },
-  {
-    "account_id": 943848,
-    "amount": 224.98,
-    "id": 319071
-  },
-  {
-    "account_id": 999506,
-    "amount": -955.79,
-    "id": 151773
-  },
-  {
-    "account_id": 999506,
-    "amount": 792.49,
-    "id": 218281
-  },
-  {
-    "account_id": 999506,
-    "amount": -166.99,
-    "id": 572381
-  },
-  {
-    "account_id": 999506,
-    "amount": 67.16,
-    "id": 113595
-  },
-  {
-    "account_id": 733476,
-    "amount": 996.6,
-    "id": 297102
-  },
-  {
-    "account_id": 733476,
-    "amount": -736.72,
-    "id": 546893
-  },
-  {
-    "account_id": 733476,
-    "amount": -362.6,
-    "id": 262215
-  },
-  {
-    "account_id": 733476,
-    "amount": -74.07,
-    "id": 404058
-  },
-  {
-    "account_id": 844,
-    "amount": -72.11,
-    "id": 441717
-  },
-  {
-    "account_id": 844,
-    "amount": -632.12,
-    "id": 935808
-  },
-  {
-    "account_id": 844,
-    "amount": -109.21,
-    "id": 292239
-  },
-  {
-    "account_id": 844,
-    "amount": 321.93,
-    "id": 833392
-  },
-  {
-    "account_id": 321,
-    "amount": -81.44,
-    "id": 930689
-  },
-  {
-    "account_id": 321,
-    "amount": -313.43,
-    "id": 115287
-  },
-  {
-    "account_id": 321,
-    "amount": -941.39,
-    "id": 204149
-  },
-  {
-    "account_id": 321,
-    "amount": -625.45,
-    "id": 228550
-  },
-  {
-    "account_id": 508,
-    "amount": -248.19,
-    "id": 942746
-  },
-  {
-    "account_id": 508,
-    "amount": -402.27,
-    "id": 434009
-  },
-  {
-    "account_id": 508,
-    "amount": 208.68,
-    "id": 338275
-  },
-  {
-    "account_id": 508,
-    "amount": 429.93,
-    "id": 834965
-  },
-  {
-    "account_id": 688,
-    "amount": 129.74,
-    "id": 576758
-  },
-  {
-    "account_id": 688,
-    "amount": -589.56,
-    "id": 173833
-  },
-  {
-    "account_id": 688,
-    "amount": -461.61,
-    "id": 308357
-  },
-  {
-    "account_id": 688,
-    "amount": -496.0,
-    "id": 723365
-  }
-]
+{"account_id":893204,"amount":-621.21,"id":657479}
+{"account_id":893204,"amount":289.18,"id":529102}
+{"account_id":893204,"amount":101.46,"id":210775}
+{"account_id":893204,"amount":260.46,"id":261878}
+{"account_id":823513,"amount":-178.77,"id":225729}
+{"account_id":823513,"amount":-181.91,"id":395347}
+{"account_id":823513,"amount":-147.89,"id":100443}
+{"account_id":823513,"amount":281.25,"id":882102}
+{"account_id":665744,"amount":-437.82,"id":283862}
+{"account_id":665744,"amount":-195.71,"id":105965}
+{"account_id":665744,"amount":-208.23,"id":164129}
+{"account_id":665744,"amount":158.01,"id":319516}
+{"account_id":141382,"amount":-977.52,"id":177854}
+{"account_id":141382,"amount":-457.54,"id":296171}
+{"account_id":141382,"amount":-784.66,"id":657610}
+{"account_id":141382,"amount":628.24,"id":584816}
+{"account_id":183,"amount":234.6,"id":726297}
+{"account_id":183,"amount":-790.23,"id":770225}
+{"account_id":183,"amount":-931.3,"id":873824}
+{"account_id":183,"amount":398.24,"id":130810}
+{"account_id":375,"amount":199.35,"id":679982}
+{"account_id":375,"amount":-222.98,"id":357692}
+{"account_id":375,"amount":912.74,"id":966154}
+{"account_id":375,"amount":393.63,"id":132328}
+{"account_id":628,"amount":147.13,"id":186226}
+{"account_id":628,"amount":-681.09,"id":628713}
+{"account_id":628,"amount":604.61,"id":588774}
+{"account_id":628,"amount":-871.94,"id":612323}
+{"account_id":318,"amount":299.7,"id":771949}
+{"account_id":318,"amount":243.75,"id":793538}
+{"account_id":318,"amount":-315.81,"id":871955}
+{"account_id":318,"amount":85.98,"id":364725}
