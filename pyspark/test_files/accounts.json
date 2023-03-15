@@ -1,0 +1,42 @@
+[
+  {
+    "account_balance": -1328.87,
+    "customer_id": 615245,
+    "id": 134560
+  },
+  {
+    "account_balance": 9815.29,
+    "customer_id": 615245,
+    "id": 943848
+  },
+  {
+    "account_balance": -11282.23,
+    "customer_id": 388917,
+    "id": 999506
+  },
+  {
+    "account_balance": 6913.74,
+    "customer_id": 388917,
+    "id": 733476
+  },
+  {
+    "account_balance": -491.51000000000005,
+    "customer_id": 245215,
+    "id": 844
+  },
+  {
+    "account_balance": -1961.71,
+    "customer_id": 245215,
+    "id": 321
+  },
+  {
+    "account_balance": -11.850000000000023,
+    "customer_id": 726299,
+    "id": 508
+  },
+  {
+    "account_balance": -1417.4299999999998,
+    "customer_id": 726299,
+    "id": 688
+  }
+]
