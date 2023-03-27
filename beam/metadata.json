@@ -1,0 +1,15 @@
+{
+  "name": "wordcount_bq",
+  "parameters": [
+    {
+      "name": "input",
+      "label": "input",
+      "helpText": "gsutil URI"
+    },
+    {
+      "name": "output",
+      "label": "output",
+      "helpText": "BQ table location in format project.dataset.table"
+    }
+  ]
+}
