@@ -2,3 +2,4 @@
 debits.json
 suspicious.json
 solution.py
+*.env
