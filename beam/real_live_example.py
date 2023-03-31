@@ -45,38 +45,59 @@ def run(argv=None):
             )
         )
 
-        validated_header = (
-            validation_header
-            | "Validate header" >> beam.Map(validate_header, known_args.date)
+        fieldnames = (
+            schema_header
+            | "Split to field names" >> beam.Map(lambda line: line.split(","))
         )
-        rows_count = (
+        csv_rows = (
             rows
-            | "Count rows" >> beam.combiners.Count.Globally()
+            | "Parse csv rows" >> beam.MapTuple(parse_csv_rows, pvalue.AsSingleton(fieldnames))
         )
 
-        validated_trailer = (
-            trailer
-            | "Validate trailer" >> beam.Map(validate_trailer, pvalue.AsSingleton(rows_count))
+        validated_header = (
+                validation_header
+                | "Validate header" >> beam.Map(lambda header, date: header == date, known_args.date)
         )
 
-        if validated_header and validated_trailer:
-            fieldnames = (
-                schema_header
-                | "Split to field names" >> beam.Map(lambda line: line.split(","))
-            )
-            csv_rows = (
+        rows_count = (
                 rows
-                | "Parse csv rows" >> beam.MapTuple(parse_csv_rows, pvalue.AsSingleton(fieldnames))
-            )
-            (
-                csv_rows
-                | "Write to BQ" >> WriteToBigQuery(
-                    table=known_args.output,
-                    schema="SCHEMA_AUTODETECT",
-                    write_disposition=beam.io.BigQueryDisposition.WRITE_TRUNCATE,
-                    create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED
+                | "Count rows" >> beam.combiners.Count.Globally()
+        )
+        validated_trailer = (
+                trailer
+                | "Validate trailer" >> beam.Map(
+                    lambda rows_count, trailer_count: rows_count == trailer_count, pvalue.AsSingleton(rows_count)
                 )
+        )
+
+        valid_rows, invalid_rows = (
+            csv_rows
+            | "Validate rows" >> beam.Map(
+                validate_rows, pvalue.AsSingleton(validated_header), pvalue.AsSingleton(validated_trailer)
+            ).with_outputs("invalid_rows", main="valid_rows")
+        )
+
+        project_id = "alk-big-data-processing"
+
+        (
+            valid_rows
+            | "Write valid rows to BQ" >> WriteToBigQuery(
+                table=f"{project_id}.valid.{known_args.output}",
+                schema="SCHEMA_AUTODETECT",
+                write_disposition=beam.io.BigQueryDisposition.WRITE_TRUNCATE,
+                create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED
             )
+        )
+
+        (
+            invalid_rows
+            | "Write invalid rows to BQ" >> WriteToBigQuery(
+                table=f"{project_id}.invalid.{known_args.output}",
+                schema="SCHEMA_AUTODETECT",
+                write_disposition=beam.io.BigQueryDisposition.WRITE_TRUNCATE,
+                create_disposition=beam.io.BigQueryDisposition.CREATE_IF_NEEDED
+            )
+        )
 
 
 def decrypt(file: fileio.ReadableFile) -> bytes:
@@ -104,24 +125,25 @@ def split_rows(content: BytesIO):
         row_number += 1
 
 
-def validate_header(header: str, date: str):
-    if header == date:
-        return True
-    else:
-        raise ValueError("Validation for header failed")
-
-
-def validate_trailer(trailer_count: int, rows_count: int):
-    if rows_count == trailer_count:
-        return True
-    else:
-        raise ValueError("Validation for trailer failed")
-
-
 def parse_csv_rows(line: str, row_number: int, fieldnames=None) -> Dict:
     [line_dict] = csv.DictReader([line], fieldnames=fieldnames)
     line_dict["row_number"] = row_number
     return line_dict
+
+
+def get_table_ref(validated_header: bool, validated_trailer: bool, table: str) -> str:
+    if validated_header and validated_trailer:
+        dataset = "validated"
+    else:
+        dataset = "invalidated"
+    return f"alk-big-data-processing.{dataset}.{table}"
+
+
+def validate_rows(row, validated_header, validated_trailer):
+    if validated_header and validated_trailer:
+        return row
+    else:
+        return pvalue.TaggedOutput("invalid_rows", row)
 
 
 if __name__ == "__main__":
