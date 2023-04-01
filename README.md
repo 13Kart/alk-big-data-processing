@@ -2,6 +2,14 @@
 
 ## beam
 
+### Local development
+
+```bash
+python3 -m venv /path/to/new/virtual/environment
+source /path/to/new/virtual/environment/bin/activate
+pip install -r requirements.txt
+```
+
 ### Create Dataflow flex template
 
 - Set up variables
