@@ -66,7 +66,7 @@ def run(argv=None):
         validated_trailer = (
                 trailer
                 | "Validate trailer" >> beam.Map(
-                    lambda rows_count, trailer_count: rows_count == trailer_count, pvalue.AsSingleton(rows_count)
+                    lambda trailer_count, rows_count: rows_count == trailer_count, rows_count=pvalue.AsSingleton(rows_count)
                 )
         )
 
@@ -118,7 +118,7 @@ def split_rows(content: BytesIO):
     while line:
         next_line = content.readline().decode("utf-8").strip()
         if next_line:
-            yield line, row_number
+            yield (line, row_number)
         else:
             yield pvalue.TaggedOutput("trailer", int(line))
         line = next_line
