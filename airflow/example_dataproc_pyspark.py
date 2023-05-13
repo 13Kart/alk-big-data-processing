@@ -37,7 +37,7 @@ output_file = os.path.join(
     datetime.datetime.now().strftime('%Y%m%d-%H%M%S')) + os.sep
 # Path to PySpark wordcount example available on every Dataproc cluster.
 WORDCOUNT_PATH = (
-    'gs://alk-big-data-processing-w2/wordcount_df_bq.py'
+    'gs://alk-big-data-processing-w4/wordcount_df.py'
 )
 # Arguments to pass to Cloud Dataproc job.
 input_file = 'gs://alk-big-data-processing-w2/pan-tadeusz.txt'

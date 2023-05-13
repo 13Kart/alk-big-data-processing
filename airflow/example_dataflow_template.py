@@ -22,7 +22,7 @@ from datetime import datetime
 
 from airflow import models
 from airflow.providers.google.cloud.operators.dataflow import DataflowTemplatedJobStartOperator
-from airflow.providers.google.cloud.operators.gcs import GCSObjectExistenceSensor
+from airflow.providers.google.cloud.sensors.gcs import GCSObjectExistenceSensor
 
 DAG_ID = "dataflow_template"
 
