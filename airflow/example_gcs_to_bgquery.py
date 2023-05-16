@@ -24,8 +24,7 @@ from datetime import datetime
 
 from airflow import models
 from airflow.providers.google.cloud.operators.bigquery import (
-    BigQueryCreateEmptyDatasetOperator,
-    BigQueryDeleteDatasetOperator,
+    BigQueryCreateEmptyDatasetOperator
 )
 from airflow.providers.google.cloud.transfers.gcs_to_bigquery import GCSToBigQueryOperator
 

@@ -32,7 +32,6 @@ FILE_NAME = "pan-tadeusz.txt"
 GCS_TMP = f"gs://{BUCKET_NAME}/temp/"
 GCS_STAGING = f"gs://{BUCKET_NAME}/staging/"
 GCS_OUTPUT = f"gs://{BUCKET_NAME}/output"
-LOCATION = "europe-west3"
 
 default_args = {
     "dataflow_default_options": {
@@ -60,7 +59,7 @@ with models.DAG(
         project_id="{{ var.value.gcp_project }}",
         template="gs://dataflow-templates/latest/Word_Count",
         parameters={"inputFile": f"gs://{BUCKET_NAME}/{FILE_NAME}", "output": GCS_OUTPUT},
-        location=LOCATION,
+        location="{{ var.value.gce_region }}",
     )
 
     gcs_object_exists >> start_template_job
