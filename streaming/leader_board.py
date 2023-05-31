@@ -217,19 +217,18 @@ class CalculateTeamScores(beam.PTransform):
         self.allowed_lateness_seconds = allowed_lateness * 60
 
     def expand(self, pcoll):
-        # NOTE: the behavior does not exactly match the Java example
-        # TODO: allowed_lateness not implemented yet in FixedWindows
-        # TODO: AfterProcessingTime not implemented yet, replace AfterCount
         return (
                 pcoll
                 # We will get early (speculative) results as well as cumulative
                 # processing of late data.
                 | 'LeaderboardTeamFixedWindows' >> beam.WindowInto(
-            beam.window.FixedWindows(self.team_window_duration),
-            trigger=trigger.AfterWatermark(
-                trigger.AfterCount(10), trigger.AfterCount(20)),
-            accumulation_mode=trigger.AccumulationMode.ACCUMULATING)
-                # Extract and sum teamname/score pairs from the event data.
+                    beam.window.FixedWindows(self.team_window_duration),
+                    trigger=trigger.AfterWatermark(
+                        trigger.AfterProcessingTime(5 * 60), trigger.AfterProcessingTime(10 * 60)
+                    ),
+                    accumulation_mode=trigger.AccumulationMode.ACCUMULATING,
+                    allowed_lateness=self.allowed_lateness_seconds)
+                # Extract and sum teammate/score pairs from the event data.
                 | 'ExtractAndSumScore' >> ExtractAndSumScore('team'))
 
 
@@ -248,16 +247,14 @@ class CalculateUserScores(beam.PTransform):
         self.allowed_lateness_seconds = allowed_lateness * 60
 
     def expand(self, pcoll):
-        # NOTE: the behavior does not exactly match the Java example
-        # TODO: allowed_lateness not implemented yet in FixedWindows
-        # TODO: AfterProcessingTime not implemented yet, replace AfterCount
         return (
                 pcoll
                 # Get periodic results every ten events.
                 | 'LeaderboardUserGlobalWindows' >> beam.WindowInto(
-            beam.window.GlobalWindows(),
-            trigger=trigger.Repeatedly(trigger.AfterCount(10)),
-            accumulation_mode=trigger.AccumulationMode.ACCUMULATING)
+                    beam.window.GlobalWindows(),
+                    trigger=trigger.Repeatedly(trigger.AfterProcessingTime(10 * 60)),
+                    accumulation_mode=trigger.AccumulationMode.ACCUMULATING,
+                    allowed_lateness=self.allowed_lateness_seconds)
                 # Extract and sum username/score pairs from the event data.
                 | 'ExtractAndSumScore' >> ExtractAndSumScore('user'))
 
@@ -332,24 +329,24 @@ def run(argv=None, save_main_session=True):
                 | 'DecodeString' >> beam.Map(lambda b: b.decode('utf-8'))
                 | 'ParseGameEventFn' >> beam.ParDo(ParseGameEventFn())
                 | 'AddEventTimestamps' >> beam.Map(
-            lambda elem: beam.window.TimestampedValue(elem, elem['timestamp'])))
+                    lambda elem: beam.window.TimestampedValue(elem, elem['timestamp'])))
 
         # Get team scores and write the results to BigQuery
         (  # pylint: disable=expression-not-assigned
                 events
                 | 'CalculateTeamScores' >> CalculateTeamScores(
-            args.team_window_duration, args.allowed_lateness)
+                    args.team_window_duration, args.allowed_lateness)
                 | 'TeamScoresDict' >> beam.ParDo(TeamScoresDict())
                 | 'WriteTeamScoreSums' >> WriteToBigQuery(
-            args.table_name + '_teams',
-            args.dataset,
-            {
-                'team': 'STRING',
-                'total_score': 'INTEGER',
-                'window_start': 'STRING',
-                'processing_time': 'STRING',
-            },
-            options.view_as(GoogleCloudOptions).project))
+                    args.table_name + '_teams',
+                    args.dataset,
+                    {
+                        'team': 'STRING',
+                        'total_score': 'INTEGER',
+                        'window_start': 'STRING',
+                        'processing_time': 'STRING',
+                    },
+                    options.view_as(GoogleCloudOptions).project))
 
         def format_user_score_sums(user_score):
             (user, score) = user_score
@@ -361,12 +358,12 @@ def run(argv=None, save_main_session=True):
                 | 'CalculateUserScores' >> CalculateUserScores(args.allowed_lateness)
                 | 'FormatUserScoreSums' >> beam.Map(format_user_score_sums)
                 | 'WriteUserScoreSums' >> WriteToBigQuery(
-            args.table_name + '_users',
-            args.dataset, {
-                'user': 'STRING',
-                'total_score': 'INTEGER',
-            },
-            options.view_as(GoogleCloudOptions).project))
+                    args.table_name + '_users',
+                    args.dataset, {
+                        'user': 'STRING',
+                        'total_score': 'INTEGER',
+                    },
+                    options.view_as(GoogleCloudOptions).project))
 
 
 if __name__ == '__main__':
