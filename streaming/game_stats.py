@@ -161,6 +161,12 @@ class TeamScoresDict(beam.DoFn):
         }
 
 
+class SessionDict(beam.DoFn):
+    def process(self, elem, window=beam.DoFn.WindowParam):
+        start = timestamp2str(int(window.start))
+        yield {'mean_duration': float(elem), 'window_start': start}
+
+
 class WriteToBigQuery(beam.PTransform):
     """Generate, format, and write BigQuery table row information."""
     def __init__(self, table_name, dataset, schema, project):
@@ -394,11 +400,12 @@ def run(argv=None, save_main_session=True):
                 | beam.CombineGlobally(
             beam.combiners.MeanCombineFn()).without_defaults()
                 | 'FormatAvgSessionLength' >>
-                beam.Map(lambda elem: {'mean_duration': float(elem)})
+                beam.ParDo(SessionDict())
                 | 'WriteAvgSessionLength' >> WriteToBigQuery(
             args.table_name + '_sessions',
             args.dataset, {
                 'mean_duration': 'FLOAT',
+                'window_start': 'STRING'
             },
             options.view_as(GoogleCloudOptions).project))
         # [END rewindow]

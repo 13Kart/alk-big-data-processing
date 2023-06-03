@@ -350,7 +350,7 @@ def run(argv=None, save_main_session=True):
 
         def format_user_score_sums(user_score):
             (user, score) = user_score
-            return {'user': user, 'total_score': score}
+            return {'user': user, 'total_score': score, 'processing_time': timestamp2str(int(time.time()))}
 
         # Get user scores and write the results to BigQuery
         (  # pylint: disable=expression-not-assigned
@@ -362,6 +362,7 @@ def run(argv=None, save_main_session=True):
                     args.dataset, {
                         'user': 'STRING',
                         'total_score': 'INTEGER',
+                        'processing_time': 'STRING'
                     },
                     options.view_as(GoogleCloudOptions).project))
 
